@@ -4,6 +4,8 @@ import 'package:ssn_attendance/screens/homepage.dart';
 import 'package:ssn_attendance/screens/faculty.dart';
 import 'package:ssn_attendance/screens/register_student.dart';
 import 'package:ssn_attendance/services/auth.dart';
+import 'package:flutter/services.dart';
+import 'package:mac_address/mac_address.dart';
 
 class MyLogin extends StatefulWidget{
   const MyLogin({Key?key}): super(key: key);
@@ -19,9 +21,24 @@ class _MyLoginState extends State<MyLogin> {
   String mac_address = "";
   final AuthService _auth = AuthService();
 
+  Future<void> initPlatformState() async {
+    String platformVersion;
+    try {
+      platformVersion = await GetMac.macAddress;
+    } on PlatformException {
+      platformVersion = 'Failed to get Device MAC Address.';
+    }
+    if (!mounted) return;
+
+    setState(() {
+      mac_address = platformVersion;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    initPlatformState();
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
@@ -155,7 +172,7 @@ class _MyLoginState extends State<MyLogin> {
                               child: Text("LOGIN"),
                               onPressed: () async {
                                 //dynamic sign_result = await _auth.signinemail(final_emailid,final_password);
-                                dynamic sign_result = await _auth.signindatabase(final_emailid,final_password,dropdownValue);
+                                dynamic sign_result = await _auth.signindatabase(final_emailid,final_password,dropdownValue,mac_address);
                                 if (sign_result == 1){
                                   print("User does not exist");
                                   showDialog(
@@ -193,6 +210,22 @@ class _MyLoginState extends State<MyLogin> {
                                               style: TextStyle(
                                                 color: Colors.red,),),
                                             content: Text('Invalid email!!\nTry ssn mail..'),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(Radius.circular(20))
+                                            ),
+                                            elevation: 5,
+                                          )
+                                  );
+                                }
+                                else if(sign_result == 5){
+                                  showDialog(
+                                      context: context,
+                                      builder: (_) =>
+                                          AlertDialog(
+                                            title: Text("Invalid Device!!",
+                                              style: TextStyle(
+                                                color: Colors.red,),),
+                                            content: Text('This is not your device!!\nTry your device..\nIn case of new device contact your Administrator'),
                                             shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.all(Radius.circular(20))
                                             ),

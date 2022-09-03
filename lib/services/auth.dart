@@ -8,6 +8,7 @@ class AuthService{
   String _email = "";
   String _pass = "";
   String _type = "";
+  String _mac = "";
   // sign in email
   /*
   Future signinemail(String a, String b) async {
@@ -55,15 +56,16 @@ class AuthService{
   }*/
 
   //signin via database
-  Future signindatabase(String a, String b, String c) async{
+  Future signindatabase(String a, String b, String c, String d) async{
     _email = a;
     if (_email.contains("@ssn.edu.in") == false) {
       return 3;
     }
     _pass = b;
     _type = c;
+    _mac = d;
     final url = 'http://10.0.2.2:5000/login';
-    final dynamic send = await http.post(Uri.parse(url),body:json.encode({'email':_email,'password':_pass,'type':_type}));
+    final dynamic send = await http.post(Uri.parse(url),body:json.encode({'email':_email,'password':_pass,'type':_type, 'mac_id':_mac}));
     final decoded = json.decode(send.body) as Map<String, dynamic>;
     print(decoded);
     return decoded['status'];
