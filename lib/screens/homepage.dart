@@ -18,7 +18,7 @@ class MyHomepage extends StatefulWidget{
 class _MyHomepageState extends State<MyHomepage> {
   //variable declaration
   String otp = "";
-  String session_name = "";
+  dynamic session_name;
   String sub = "";
   String mac1 = "";
   dynamic dropdownValue = "";
@@ -332,8 +332,8 @@ class _MyHomepageState extends State<MyHomepage> {
                                 style: TextStyle(color: Colors.black),
                                 onChanged: (String? newValue) {
                                   setState(() {
-                                    dropdownValue = newValue!;
-                                    session_name = newValue!;
+                                    //dropdownValue = newValue!;
+                                    session_name = newValue;
                                     print(dropdownValue);
                                   });
                                 },

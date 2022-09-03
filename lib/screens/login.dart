@@ -16,6 +16,7 @@ class _MyLoginState extends State<MyLogin> {
   String dropdownValue = 'Student';
   String final_password = "";
   String final_emailid = "";
+  String mac_address = "";
   final AuthService _auth = AuthService();
 
   @override

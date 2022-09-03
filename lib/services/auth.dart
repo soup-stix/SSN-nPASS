@@ -9,6 +9,7 @@ class AuthService{
   String _pass = "";
   String _type = "";
   // sign in email
+  /*
   Future signinemail(String a, String b) async {
     _email = a;
     if (_email.contains("@ssn.edu.in") == false) {
@@ -51,7 +52,7 @@ class AuthService{
       print(e);
     }
     return 0;
-  }
+  }*/
 
   //signin via database
   Future signindatabase(String a, String b, String c) async{
