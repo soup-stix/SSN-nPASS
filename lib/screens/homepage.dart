@@ -200,7 +200,7 @@ class _MyHomepageState extends State<MyHomepage> {
         builder: (_) =>
             AlertDialog(
               title: Text('OOPSIES..Your late!!', style: TextStyle(color: Colors.red,),),
-              content: Text('Go beg your professor :)'),
+              content: Text('Contact your professor for attendance :)'),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20))
               ),

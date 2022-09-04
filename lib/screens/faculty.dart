@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:network_info_plus/network_info_plus.dart';
 import 'package:wifi_info_plugin/wifi_info_plugin.dart';
 import 'package:mac_address/mac_address.dart';
 
@@ -43,7 +44,9 @@ dynamic id_checker() async{
   var mac7 = wifiObject.connectionType.toString();
   var mac8 = wifiObject.isHiddenSSid.toString();
   print(mac1+"\n"+mac2+"\n"+mac3+"\n"+mac4+"\n"+ap_mac+"\n"+mac6+"\n"+mac7+"\n"+mac8);
-
+  final info = NetworkInfo();
+  ap_mac = (await info.getWifiBSSID())!;
+  print(ap_mac);
 }
 
 void get_subjects() async{
