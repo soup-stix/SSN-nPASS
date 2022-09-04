@@ -24,7 +24,7 @@ class _RegFacState extends State<RegFac> {
   String password = "";
 
   void faculty_register() async{
-    final url = 'http://10.0.2.2:5000/faculty_register';
+    final url = 'http://192.168.0.171:5000/faculty_register';
     final dynamic send = await http.post(Uri.parse(url), body: json.encode({
       'email_id': email_id,
       'f_name': f_name,

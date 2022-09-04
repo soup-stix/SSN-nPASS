@@ -16,7 +16,7 @@ class MyFaculty extends StatefulWidget{
 }
 
 class _MyFacultyState extends State<MyFaculty> {
-String session_name = "";
+dynamic session_name;
 dynamic OTP;
 String ap_mac = "";
 dynamic dropdownValue = "";
@@ -37,8 +37,8 @@ dynamic id_checker() async{
   var mac1 = wifiObject.routerIp.toString();
   var mac2 = wifiObject.ipAddress.toString();
   var mac3 = wifiObject.networkId.toString();
-  var mac4 = wifiObject.bssId.toString();
-  ap_mac = wifiObject.macAddress.toString();
+  ap_mac = wifiObject.bssId.toString();
+  var mac4 = wifiObject.macAddress.toString();
   var mac6 = wifiObject.signalStrength.toString();
   var mac7 = wifiObject.connectionType.toString();
   var mac8 = wifiObject.isHiddenSSid.toString();
@@ -47,28 +47,28 @@ dynamic id_checker() async{
 }
 
 void get_subjects() async{
-  final url = 'http://10.0.2.2:5000/professor_subjects';
+  final url = 'http://192.168.0.171:5000/professor_subjects';
   final dynamic send = await http.post(Uri.parse(url), body: json.encode({
     'email': widget.email,
   }));
-  final decoded = json.decode(send.body) as Map<String, dynamic>;
+  final decoded = await json.decode(send.body) as Map<String, dynamic>;
   print(decoded['subjects']);
 
-  dropdownValue = decoded['subjects'][0];
+  dropdownValue = await decoded['subjects'][0];
   sub_list = decoded['subjects'];
 }
 
 void get_details() async{
   print(widget.email);
-  final url = 'http://10.0.2.2:5000/faculty_details';
+  final url = 'http://192.168.0.171:5000/faculty_details';
   final dynamic send = await http.post(Uri.parse(url), body: json.encode({
     'email': widget.email,
   }));
-  final decoded = json.decode(send.body) as Map<String, dynamic>;
+  final decoded = await json.decode(send.body) as Map<String, dynamic>;
   print(decoded);
-  f_name = decoded['f_name'];
-  l_name = decoded['l_name'];
-  fac_id = decoded['reg_no'];
+  f_name = await decoded['f_name'];
+  l_name = await decoded['l_name'];
+  fac_id = await decoded['reg_no'];
 }
 
   @override
@@ -78,8 +78,6 @@ void get_details() async{
     final end = date.end;
     get_details();
     get_subjects();
-
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -248,51 +246,25 @@ void get_details() async{
                             },
                           ),
                         ),*/
-                        ElevatedButton(
-                            onPressed: () async {
-                              await id_checker();
-                              final url = 'http://10.0.2.2:5000/send';
-                              OTP = await http.post(Uri.parse(url),body:json.encode({'email': widget.email,'name':session_name,'ip':ap_mac}));
-                              final decoded_otp = json.decode(OTP.body) as Map<String, dynamic>;
-                              print(decoded_otp);
-                              if (decoded_otp['status'] == 'na'){
-                                showDialog(
-                                  context: context,
-                                  builder: (_) => AlertDialog(
-                                    title: Align(
-                                        alignment: Alignment.center,
-                                        child: Text("Error!",style: TextStyle(color: Colors.red),)),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(Radius.circular(20))
-                                    ),
-                                    elevation: 5,
-                                    actionsPadding: EdgeInsets.all(10.0),
-                                    actions: [
-                                      Align(
-                                          alignment: Alignment.center,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text("Session already exists",style: TextStyle(color: Colors.black,fontSize: 20),maxLines: 3,),
-                                          )),
-                                    ],
-                                  ),
-                                );
-                              }
-                              else if(decoded_otp['status'] == 'done') {
-                                var text_otp = decoded_otp['otp'];
-                                var text_name = decoded_otp['name'];
-                                showDialog(
-                                  context: context,
-                                  builder: (_) =>
-                                      AlertDialog(
+                        Row(
+                          children: [
+                            Spacer(),
+                            ElevatedButton(
+                                onPressed: () async {
+                                  await id_checker();
+                                  final url = 'http://192.168.0.171:5000/send';
+                                  OTP = await http.post(Uri.parse(url),body:json.encode({'email': widget.email,'name':session_name,'ip':ap_mac}));
+                                  final decoded_otp = json.decode(OTP.body) as Map<String, dynamic>;
+                                  print(decoded_otp);
+                                  if (decoded_otp['status'] == 'na'){
+                                    showDialog(
+                                      context: context,
+                                      builder: (_) => AlertDialog(
                                         title: Align(
                                             alignment: Alignment.center,
-                                            child: Text("Share with students",
-                                              style: TextStyle(
-                                                  color: Colors.blue),)),
+                                            child: Text("Error!",style: TextStyle(color: Colors.red),)),
                                         shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(20))
+                                            borderRadius: BorderRadius.all(Radius.circular(20))
                                         ),
                                         elevation: 5,
                                         actionsPadding: EdgeInsets.all(10.0),
@@ -300,51 +272,97 @@ void get_details() async{
                                           Align(
                                               alignment: Alignment.center,
                                               child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                    8.0),
-                                                child: Text("Session Name :",
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 20),
-                                                  maxLines: 3,),
-                                              )),
-                                          Align(
-                                              alignment: Alignment.center,
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                    8.0),
-                                                child: Text(text_name,
-                                                  style: TextStyle(
-                                                      color: Colors.red,
-                                                      fontSize: 20),
-                                                  maxLines: 3,),
-                                              )),
-                                          Align(
-                                              alignment: Alignment.center,
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                    8.0),
-                                                child: Text("OTP :",
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 20),),
-                                              )),
-                                          Align(
-                                              alignment: Alignment.center,
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(
-                                                    8.0),
-                                                child: Text(text_otp,
-                                                  style: TextStyle(
-                                                      color: Colors.red,
-                                                      fontSize: 20),),
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text("Session already exists",style: TextStyle(color: Colors.black,fontSize: 20),maxLines: 3,),
                                               )),
                                         ],
                                       ),
-                                );
-                              }
-                            },
-                            child: Text("Generate OTP")
+                                    );
+                                  }
+                                  else if(decoded_otp['status'] == 'done') {
+                                    var text_otp = decoded_otp['otp'];
+                                    var text_name = decoded_otp['name'];
+                                    showDialog(
+                                      context: context,
+                                      builder: (_) =>
+                                          AlertDialog(
+                                            title: Align(
+                                                alignment: Alignment.center,
+                                                child: Text("Share with students",
+                                                  style: TextStyle(
+                                                      color: Colors.blue),)),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(20))
+                                            ),
+                                            elevation: 5,
+                                            actionsPadding: EdgeInsets.all(10.0),
+                                            actions: [
+                                              Align(
+                                                  alignment: Alignment.center,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(
+                                                        8.0),
+                                                    child: Text("Session Name :",
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 20),
+                                                      maxLines: 3,),
+                                                  )),
+                                              Align(
+                                                  alignment: Alignment.center,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(
+                                                        8.0),
+                                                    child: Text(text_name,
+                                                      style: TextStyle(
+                                                          color: Colors.red,
+                                                          fontSize: 20),
+                                                      maxLines: 3,),
+                                                  )),
+                                              Align(
+                                                  alignment: Alignment.center,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(
+                                                        8.0),
+                                                    child: Text("OTP :",
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: 20),),
+                                                  )),
+                                              Align(
+                                                  alignment: Alignment.center,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(
+                                                        8.0),
+                                                    child: Text(text_otp,
+                                                      style: TextStyle(
+                                                          color: Colors.red,
+                                                          fontSize: 20),),
+                                                  )),
+                                            ],
+                                          ),
+                                    );
+                                  }
+                                },
+                                child: Text("Generate OTP")
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            SizedBox(
+                              child: IconButton(
+                                icon: Icon(Icons.refresh_rounded, color: Colors.blue,),
+                                iconSize: 30,
+                                onPressed: () {
+                                  setState(() {
+
+                                  });
+                                },
+                              ),
+                            ),
+                            Spacer(),
+                          ],
                         ),
                         SizedBox(
                           height: 30,

@@ -19,8 +19,9 @@ class _MyHomepageState extends State<MyHomepage> {
   //variable declaration
   String otp = "";
   dynamic session_name;
+  String prev_dropdownvalue = "";
   String sub = "";
-  String mac1 = "";
+  String ap_mac = "";
   dynamic dropdownValue = "";
   String f_name = "";
   String l_name = "";
@@ -31,40 +32,44 @@ class _MyHomepageState extends State<MyHomepage> {
 
   dynamic id_checker() async {
     WifiInfoWrapper wifiObject = await WifiInfoPlugin.wifiDetails;
-    mac1 = wifiObject.routerIp.toString();
+    var mac1 = wifiObject.routerIp.toString();
     var mac2 = wifiObject.ipAddress.toString();
     var mac3 = wifiObject.networkId.toString();
-    var mac4 = wifiObject.bssId.toString();
+    ap_mac = wifiObject.bssId.toString();
     var mac5 = wifiObject.macAddress.toString();
     var mac6 = wifiObject.signalStrength.toString();
     var mac7 = wifiObject.connectionType.toString();
     var mac8 = wifiObject.isHiddenSSid.toString();
-    print(mac1 + "\n" + mac2 + "\n" + mac3 + "\n" + mac4 + "\n" + mac5 + "\n" +
+    print(mac1 + "\n" + mac2 + "\n" + mac3 + "\n" + ap_mac + "\n" + mac5 + "\n" +
         mac6 + "\n" + mac7 + "\n" + mac8);
   }
 
   void get_subjects() async{
-    final url = 'http://10.0.2.2:5000/student_subjects';
+    final url = 'http://192.168.0.171:5000/student_subjects';
     final dynamic send = await http.post(Uri.parse(url), body: json.encode({
       'semester': semester,
     }));
     final decoded = json.decode(send.body) as Map<String, dynamic>;
     print(decoded['subjects']);
-    dropdownValue = decoded['subjects'][0];
+    if(prev_dropdownvalue == ""){
+      dropdownValue = decoded['subjects'][0];
+    }
+    else
+    dropdownValue = prev_dropdownvalue;
     sub_list = decoded['subjects'];
   }
 
   void get_details() async{
-    final url = 'http://10.0.2.2:5000/student_details';
+    final url = 'http://192.168.0.171:5000/student_details';
     final dynamic send = await http.post(Uri.parse(url), body: json.encode({
       'email': widget.email,
     }));
-    final decoded = json.decode(send.body) as Map<String, dynamic>;
+    final decoded = await json.decode(send.body) as Map<String, dynamic>;
     print(decoded);
-    f_name = decoded['f_name'];
-    l_name = decoded['l_name'];
-    reg_no = decoded['reg_no'];
-    semester = decoded['semester'];
+    f_name = await decoded['f_name'];
+    l_name = await decoded['l_name'];
+    reg_no = await decoded['reg_no'];
+    semester = await decoded['semester'];
   }
 
   void check_dialog(dynamic ans) async {
@@ -137,13 +142,13 @@ class _MyHomepageState extends State<MyHomepage> {
     );
   }
 
-
   void check_state() async {
-    final url = 'http://10.0.2.2:5000/recieve';
+    final url = 'http://192.168.0.171:5000/recieve';
+    print(session_name);
     final dynamic send = await http.post(Uri.parse(url), body: json.encode({
       'email': widget.email,
       'session_name': session_name,
-      'ip': mac1,
+      'ip': ap_mac,
       'otp': otp
     }));
     final decoded = json.decode(send.body) as Map<String, dynamic>;
@@ -183,6 +188,19 @@ class _MyHomepageState extends State<MyHomepage> {
             AlertDialog(
               title: Text('Check Subject!!', style: TextStyle(color: Colors.red,),),
               content: Text('Pls try again...'),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20))
+              ),
+            ),
+      );
+    }
+    else if(decoded['state'] == 'late') {
+      showDialog(
+        context: context,
+        builder: (_) =>
+            AlertDialog(
+              title: Text('OOPSIES..Your late!!', style: TextStyle(color: Colors.red,),),
+              content: Text('Go beg your professor :)'),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20))
               ),
@@ -332,7 +350,8 @@ class _MyHomepageState extends State<MyHomepage> {
                                 style: TextStyle(color: Colors.black),
                                 onChanged: (String? newValue) {
                                   setState(() {
-                                    //dropdownValue = newValue!;
+                                    dropdownValue = newValue!;
+                                    prev_dropdownvalue = newValue;
                                     session_name = newValue;
                                     print(dropdownValue);
                                   });
@@ -375,14 +394,29 @@ class _MyHomepageState extends State<MyHomepage> {
                             },
                           ),
                         ),
-                        ElevatedButton(
-                            onPressed: () async{
-                              await id_checker();
-                              check_state();
-                            },
-                            child: Text("Submit")
-                        ),
+                        Row(
+                          children: [
+                            Spacer(),
+                            ElevatedButton(
+                                onPressed: () async{
+                                  await id_checker();
+                                  check_state();
+                                },
+                                child: Text("Submit")
+                            ),
+                            IconButton(
+                              color: Colors.blue,
+                              icon: Icon(Icons.refresh_rounded,),
+                              iconSize: 30,
+                              onPressed: () {
+                                setState(() {
 
+                                });
+                              },
+                            ),
+                            Spacer(),
+                          ],
+                        ),
                       ],
                     ),
                   ),
