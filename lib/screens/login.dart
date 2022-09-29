@@ -25,14 +25,16 @@ class _MyLoginState extends State<MyLogin> {
     String platformVersion;
     try {
       platformVersion = await GetMac.macAddress;
+      //print(platformVersion);
     } on PlatformException {
       platformVersion = 'Failed to get Device MAC Address.';
     }
     if (!mounted) return;
 
-    setState(() {
+    /*setState(() {
       mac_address = platformVersion;
-    });
+    });*/
+    mac_address = platformVersion;
   }
 
   @override

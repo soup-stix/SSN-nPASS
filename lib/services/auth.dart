@@ -66,6 +66,7 @@ class AuthService{
     _mac = d;
     //final url = 'http://10.0.2.2:5000/login';
     final url = 'http://192.168.0.171:5000/login';
+    //final url = 'http://10.107.227.141:5000/login';
     final dynamic send = await http.post(Uri.parse(url),body:json.encode({'email':_email,'password':_pass,'type':_type, 'mac_id':_mac}));
     final decoded = json.decode(send.body) as Map<String, dynamic>;
     print(decoded);

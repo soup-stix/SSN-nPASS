@@ -50,6 +50,7 @@ dynamic id_checker() async{
 }
 
 void get_subjects() async{
+  //final url = 'http://10.0.2.2:5000/professor_subjects';
   final url = 'http://192.168.0.171:5000/professor_subjects';
   final dynamic send = await http.post(Uri.parse(url), body: json.encode({
     'email': widget.email,
@@ -63,6 +64,7 @@ void get_subjects() async{
 
 void get_details() async{
   print(widget.email);
+  //final url = 'http://10.0.2.2:5000/faculty_details';
   final url = 'http://192.168.0.171:5000/faculty_details';
   final dynamic send = await http.post(Uri.parse(url), body: json.encode({
     'email': widget.email,
@@ -223,32 +225,7 @@ void get_details() async{
                           ),
                         ),
                         SizedBox(height: 20,),
-                        /*Text("Enter the session name:",style: TextStyle(fontSize: 20,color: Colors.blue,),),
-                        SizedBox(height: 10,),
-                        Container(
-                          width: MediaQuery.of(context).size.width*0.6,
-                          height: MediaQuery.of(context).size.height*0.1,
-                          child: TextField(
 
-                            decoration: InputDecoration(
-                              fillColor: Colors.grey.shade100,
-                              filled: true,
-                              hintText: 'Session name',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            onChanged: (text) {
-                              session_name = text;
-                              print(session_name);
-                            },
-                            onSubmitted: (String password) { print("submitted\n");
-                            setState(() {
-                              session_name = password;
-                            });
-                            },
-                          ),
-                        ),*/
                         Row(
                           children: [
                             Spacer(),
@@ -256,6 +233,7 @@ void get_details() async{
                                 onPressed: () async {
                                   await id_checker();
                                   final url = 'http://192.168.0.171:5000/send';
+                                  //final url = 'http://10.0.2.2:5000/send';
                                   OTP = await http.post(Uri.parse(url),body:json.encode({'email': widget.email,'name':session_name,'ip':ap_mac}));
                                   final decoded_otp = json.decode(OTP.body) as Map<String, dynamic>;
                                   print(decoded_otp);
