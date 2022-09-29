@@ -45,7 +45,8 @@ class _MyHomepageState extends State<MyHomepage> {
   }
 
   void get_subjects() async{
-    final url = 'http://192.168.0.171:5000/student_subjects';
+    //final url = 'http://192.168.0.171:5000/student_subjects';
+    final url = 'http://10.0.2.2:5000/student_subjects';
     final dynamic send = await http.post(Uri.parse(url), body: json.encode({
       'semester': semester,
     }));
@@ -60,7 +61,8 @@ class _MyHomepageState extends State<MyHomepage> {
   }
 
   void get_details() async{
-    final url = 'http://192.168.0.171:5000/student_details';
+    //final url = 'http://192.168.0.171:5000/student_details';
+    final url = 'http://10.0.2.2:5000/student_details';
     final dynamic send = await http.post(Uri.parse(url), body: json.encode({
       'email': widget.email,
     }));
@@ -143,7 +145,8 @@ class _MyHomepageState extends State<MyHomepage> {
   }
 
   void check_state() async {
-    final url = 'http://192.168.0.171:5000/recieve';
+    //final url = 'http://192.168.0.171:5000/recieve';
+    final url = 'http://10.0.2.2:5000/recieve';
     print(session_name);
     final dynamic send = await http.post(Uri.parse(url), body: json.encode({
       'email': widget.email,

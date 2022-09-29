@@ -50,7 +50,8 @@ dynamic id_checker() async{
 }
 
 void get_subjects() async{
-  final url = 'http://192.168.0.171:5000/professor_subjects';
+  //final url = 'http://192.168.0.171:5000/professor_subjects';
+  final url = 'http://10.0.2.2:5000/professor_subjects';
   final dynamic send = await http.post(Uri.parse(url), body: json.encode({
     'email': widget.email,
   }));
@@ -63,7 +64,8 @@ void get_subjects() async{
 
 void get_details() async{
   print(widget.email);
-  final url = 'http://192.168.0.171:5000/faculty_details';
+  //final url = 'http://192.168.0.171:5000/faculty_details';
+  final url = 'http://10.0.2.2:5000/faculty_details';
   final dynamic send = await http.post(Uri.parse(url), body: json.encode({
     'email': widget.email,
   }));
@@ -255,7 +257,8 @@ void get_details() async{
                             ElevatedButton(
                                 onPressed: () async {
                                   await id_checker();
-                                  final url = 'http://192.168.0.171:5000/send';
+                                  //final url = 'http://192.168.0.171:5000/send';
+                                  final url = 'http://10.0.2.2:5000/send';
                                   OTP = await http.post(Uri.parse(url),body:json.encode({'email': widget.email,'name':session_name,'ip':ap_mac}));
                                   final decoded_otp = json.decode(OTP.body) as Map<String, dynamic>;
                                   print(decoded_otp);

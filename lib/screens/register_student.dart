@@ -30,7 +30,8 @@ class _RegStuState extends State<RegStu> {
   }
 
   void student_register() async{
-    final url = 'http://192.168.0.171:5000/student_register';
+    //final url = 'http://192.168.0.171:5000/student_register';
+    final url = 'http://10.0.2.2:5000/student_register';
     final dynamic send = await http.post(Uri.parse(url), body: json.encode({
       'email_id': email_id,
       'f_name': f_name,
